@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartExpenseTracker — Secure Access</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Include main stylesheet to get tokens and resets -->
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: var(--bg-base);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Decorative animated blobs */
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.25;
+            animation: float 10s ease-in-out infinite;
+        }
+
+        .blob-1 {
+            width: 300px;
+            height: 300px;
+            background: var(--primary);
+            top: -50px;
+            left: -50px;
+        }
+
+        .blob-2 {
+            width: 250px;
+            height: 250px;
+            background: #3b82f6;
+            bottom: -50px;
+            right: -50px;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-30px) scale(1.15); }
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 440px;
+            padding: 1.5rem;
+            z-index: 10;
+        }
+
+        .auth-card {
+            background: var(--bg-surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-premium);
+            transition: var(--transition-normal);
+        }
+
+        .auth-card:hover {
+            border-color: var(--border-glass-focused);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45), var(--shadow-glow);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-header .logo-container {
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-header h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-header p {
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+        }
+
+        /* Tabs */
+        .auth-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 2rem;
+        }
+
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 0.6rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-radius: 9px;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .auth-tab.active {
+            background: var(--primary-gradient);
+            color: #fff;
+            box-shadow: 0 4px 12px var(--primary-glow);
+        }
+
+        /* Form view toggling */
+        .form-view {
+            display: none;
+        }
+
+        .form-view.active {
+            display: block;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 1.25rem;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .input-group .form-control {
+            padding-left: 2.75rem;
+        }
+
+        .auth-alert {
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .auth-alert.error {
+            background: var(--danger-bg);
+            border: 1px solid var(--danger-border);
+            color: var(--danger);
+        }
+
+        .auth-alert.success {
+            background: var(--success-bg);
+            border: 1px solid var(--success-border);
+            color: var(--success);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="logo-container">
+                    <i class="fa-solid fa-wallet logo-icon"></i>
+                    <h2>Smart<span>Expense</span></h2>
+                </div>
+                <h3 id="auth-title">Welcome Back</h3>
+                <p id="auth-subtitle">Sign in to access your financial workspace</p>
+            </div>
+
+            <!-- Tabs -->
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="tab-login" onclick="switchTab('login')">Sign In</div>
+                <div class="auth-tab" id="tab-register" onclick="switchTab('register')">Sign Up</div>
+            </div>
+
+            <!-- Alert Container -->
+            <div id="alert-container"></div>
+
+            <!-- Login Form (POSTs directly to Spring Security) -->
+            <form id="login-form" class="form-view active" action="/login" method="POST">
+                <div class="form-group">
+                    <label for="login-username">Username</label>
+                    <div class="input-group">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" id="login-username" name="username" class="form-control" placeholder="Enter username" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <div class="input-group">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="login-password" name="password" class="form-control" placeholder="Enter password" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1.5rem;">
+                    Sign In <i class="fa-solid fa-right-to-bracket"></i>
+                </button>
+            </form>
+
+            <!-- Register Form (AJAX register, then switches to login) -->
+            <form id="register-form" class="form-view" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label for="register-username">Choose Username</label>
+                    <div class="input-group">
+                        <i class="fa-solid fa-user-plus"></i>
+                        <input type="text" id="register-username" class="form-control" placeholder="Create username" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="register-password">Password</label>
+                    <div class="input-group">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="register-password" class="form-control" placeholder="Create password" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="register-confirm-password">Confirm Password</label>
+                    <div class="input-group">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <input type="password" id="register-confirm-password" class="form-control" placeholder="Re-enter password" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1.5rem;">
+                    Create Account <i class="fa-solid fa-user-plus"></i>
+                </button>
+            </form>
+
+            <div class="footer-note">
+                SmartExpenseTracker &copy; 2026. Secure Connection.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check URL parameters for status messages
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const alertContainer = document.getElementById('alert-container');
+            
+            if (urlParams.get('error') === 'true') {
+                showAlert('Invalid username or password. Please try again.', 'error');
+            } else if (urlParams.get('logout') === 'true') {
+                showAlert('You have been logged out successfully.', 'success');
+            }
+        });
+
+        function showAlert(message, type) {
+            const container = document.getElementById('alert-container');
+            const icon = type === 'error' ? 'fa-triangle-exclamation' : 'fa-circle-check';
+            container.innerHTML = `
+                <div class="auth-alert ${type}">
+                    <i class="fa-solid ${icon}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+        }
+
+        function switchTab(type) {
+            const tabLogin = document.getElementById('tab-login');
+            const tabRegister = document.getElementById('tab-register');
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const title = document.getElementById('auth-title');
+            const subtitle = document.getElementById('auth-subtitle');
+            const alertContainer = document.getElementById('alert-container');
+            
+            alertContainer.innerHTML = ''; // Clear alerts
+            
+            if (type === 'login') {
+                tabLogin.classList.add('active');
+                tabRegister.classList.remove('active');
+                loginForm.classList.add('active');
+                registerForm.classList.remove('active');
+                title.innerText = 'Welcome Back';
+                subtitle.innerText = 'Sign in to access your financial workspace';
+            } else {
+                tabLogin.classList.remove('active');
+                tabRegister.classList.add('active');
+                loginForm.classList.remove('active');
+                registerForm.classList.add('active');
+                title.innerText = 'Create Account';
+                subtitle.innerText = 'Start tracking your spending today';
+            }
+        }
+
+        async function handleRegister(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+            const alertContainer = document.getElementById('alert-container');
+            
+            if (password !== confirmPassword) {
+                showAlert('Passwords do not match.', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Success!
+                    switchTab('login');
+                    showAlert('Registration successful! Please sign in.', 'success');
+                    // Pre-fill login username
+                    document.getElementById('login-username').value = username;
+                    // Reset registration fields
+                    document.getElementById('register-form').reset();
+                } else {
+                    showAlert(data.message || 'Registration failed.', 'error');
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                showAlert('An error occurred. Please try again later.', 'error');
+            }
+        }
+    </script>
+</body>
+</html>
