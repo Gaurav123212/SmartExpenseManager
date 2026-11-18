@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartExpenseTracker — Premium Financial Analytics</title>
+    <title>SmartExpenseTracker — Financial Analytics & Wealth Manager</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,6 +34,22 @@
                     <li class="nav-item" data-tab="expenses">
                         <i class="fa-solid fa-receipt"></i>
                         <span>Expenses</span>
+                    </li>
+                    <li class="nav-item" data-tab="incomes">
+                        <i class="fa-solid fa-money-bill-trend-up"></i>
+                        <span>Income & Cash Flow</span>
+                    </li>
+                    <li class="nav-item" data-tab="accounts">
+                        <i class="fa-solid fa-building-columns"></i>
+                        <span>Payment Accounts</span>
+                    </li>
+                    <li class="nav-item" data-tab="recurring">
+                        <i class="fa-solid fa-repeat"></i>
+                        <span>Subscriptions & Bills</span>
+                    </li>
+                    <li class="nav-item" data-tab="goals">
+                        <i class="fa-solid fa-bullseye"></i>
+                        <span>Savings Goals</span>
                     </li>
                     <li class="nav-item" data-tab="categories">
                         <i class="fa-solid fa-tags"></i>
@@ -74,6 +90,9 @@
                     <p id="page-subtitle">Track, analyze, and optimize your spending habits in real-time.</p>
                 </div>
                 <div class="header-actions">
+                    <button class="btn btn-secondary mr-2" id="btn-quick-income">
+                        <i class="fa-solid fa-money-bill-wave"></i> Add Income
+                    </button>
                     <button class="btn btn-primary" id="btn-quick-expense">
                         <i class="fa-solid fa-plus"></i> Add Expense
                     </button>
@@ -120,13 +139,41 @@
 
                     <div class="stat-card count">
                         <div class="stat-icon-wrapper">
-                            <i class="fa-solid fa-list-check"></i>
+                            <i class="fa-solid fa-building-columns"></i>
                         </div>
                         <div class="stat-info">
-                            <span class="stat-label">Total Transactions</span>
-                            <h3 class="stat-value" id="stat-expense-count">0</h3>
+                            <span class="stat-label">Total Liquid Net Worth</span>
+                            <h3 class="stat-value" id="stat-total-balance">$0.00</h3>
                         </div>
                         <div class="stat-glow"></div>
+                    </div>
+                </div>
+
+                <!-- Cash Flow Mini Bar -->
+                <div class="cash-flow-summary-bar content-card margin-top">
+                    <div class="cf-item">
+                        <span class="cf-label"><i class="fa-solid fa-arrow-down text-success"></i> Monthly Income</span>
+                        <h4 class="cf-val text-success" id="cf-income">$0.00</h4>
+                    </div>
+                    <div class="cf-divider"></div>
+                    <div class="cf-item">
+                        <span class="cf-label"><i class="fa-solid fa-arrow-up text-danger"></i> Monthly Expenses</span>
+                        <h4 class="cf-val text-danger" id="cf-expense">$0.00</h4>
+                    </div>
+                    <div class="cf-divider"></div>
+                    <div class="cf-item">
+                        <span class="cf-label"><i class="fa-solid fa-piggy-bank text-primary"></i> Net Savings</span>
+                        <h4 class="cf-val text-primary" id="cf-savings">$0.00</h4>
+                    </div>
+                    <div class="cf-divider"></div>
+                    <div class="cf-item">
+                        <span class="cf-label"><i class="fa-solid fa-percent text-warning"></i> Savings Rate</span>
+                        <h4 class="cf-val text-warning" id="cf-rate">0.0%</h4>
+                    </div>
+                    <div class="cf-divider"></div>
+                    <div class="cf-item">
+                        <span class="cf-label"><i class="fa-solid fa-repeat text-info"></i> Subscriptions</span>
+                        <h4 class="cf-val text-info" id="cf-recurring">$0.00/mo</h4>
                     </div>
                 </div>
 
@@ -199,12 +246,22 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
+                                    <label for="quick-account">Payment Account</label>
+                                    <select id="quick-account" class="form-control">
+                                        <option value="">None / Cash</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
                                     <label for="quick-date">Date</label>
                                     <input type="date" id="quick-date" class="form-control" required>
                                 </div>
+                                <div class="form-group">
+                                    <label for="quick-merchant">Merchant / Vendor</label>
+                                    <input type="text" id="quick-merchant" class="form-control" placeholder="e.g. Starbucks, Target">
+                                </div>
                                 <div class="form-group col-span-2">
-                                    <label for="quick-description">Description</label>
-                                    <input type="text" id="quick-description" class="form-control" placeholder="Optional description">
+                                    <label for="quick-description">Description / Notes</label>
+                                    <input type="text" id="quick-description" class="form-control" placeholder="Optional transaction note">
                                 </div>
                                 <button type="submit" class="btn btn-primary btn-block col-span-2">
                                     <i class="fa-solid fa-plus"></i> Add Transaction
@@ -226,16 +283,17 @@
                                 <thead>
                                     <tr>
                                         <th>Expense Title</th>
+                                        <th>Merchant</th>
                                         <th>Category</th>
+                                        <th>Account</th>
                                         <th>Date</th>
-                                        <th>Description</th>
                                         <th>Amount</th>
                                         <th class="text-right">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td colspan="6" class="text-center text-muted py-4">No recent expenses found. Add some to get started!</td>
+                                        <td colspan="7" class="text-center text-muted py-4">No recent expenses found. Add some to get started!</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -250,10 +308,13 @@
                     <div class="filter-inputs">
                         <div class="search-input-wrapper">
                             <i class="fa-solid fa-magnifying-glass"></i>
-                            <input type="text" id="expense-search" class="form-control" placeholder="Search transactions...">
+                            <input type="text" id="expense-search" class="form-control" placeholder="Search transactions, merchants...">
                         </div>
                         <select id="expense-filter-category" class="form-control">
                             <option value="">All Categories</option>
+                        </select>
+                        <select id="expense-filter-account" class="form-control">
+                            <option value="">All Accounts</option>
                         </select>
                         <select id="expense-sort" class="form-control">
                             <option value="date-desc">Date (Newest First)</option>
@@ -274,9 +335,11 @@
                                 <thead>
                                     <tr>
                                         <th>Expense Title</th>
+                                        <th>Merchant</th>
                                         <th>Category</th>
+                                        <th>Account / Method</th>
+                                        <th>Tags</th>
                                         <th>Date</th>
-                                        <th>Description</th>
                                         <th>Amount</th>
                                         <th class="text-right">Actions</th>
                                     </tr>
@@ -290,7 +353,179 @@
                 </div>
             </section>
 
-            <!-- 3. Categories Section -->
+            <!-- 3. Income & Cash Flow Section (NEW) -->
+            <section id="tab-incomes" class="tab-content">
+                <div class="stats-grid">
+                    <div class="stat-card spent">
+                        <div class="stat-icon-wrapper">
+                            <i class="fa-solid fa-hand-holding-dollar"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Total Monthly Inflows</span>
+                            <h3 class="stat-value text-success" id="income-stat-total">$0.00</h3>
+                        </div>
+                        <div class="stat-glow"></div>
+                    </div>
+                    <div class="stat-card remaining">
+                        <div class="stat-icon-wrapper">
+                            <i class="fa-solid fa-piggy-bank"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Net Monthly Savings</span>
+                            <h3 class="stat-value text-primary" id="income-stat-savings">$0.00</h3>
+                        </div>
+                        <div class="stat-glow"></div>
+                    </div>
+                    <div class="stat-card budget">
+                        <div class="stat-icon-wrapper">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Current Savings Rate</span>
+                            <h3 class="stat-value text-warning" id="income-stat-rate">0.0%</h3>
+                        </div>
+                        <div class="stat-glow"></div>
+                    </div>
+                </div>
+
+                <div class="filter-bar content-card margin-top">
+                    <div class="filter-inputs">
+                        <div class="search-input-wrapper flex-grow">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="income-search" class="form-control" placeholder="Search income sources...">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="btn-add-income">
+                        <i class="fa-solid fa-plus"></i> Record Income
+                    </button>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-body no-padding">
+                        <div class="table-responsive">
+                            <table class="table" id="incomes-table">
+                                <thead>
+                                    <tr>
+                                        <th>Income Source</th>
+                                        <th>Category</th>
+                                        <th>Deposited Account</th>
+                                        <th>Date</th>
+                                        <th>Payment Method</th>
+                                        <th>Amount</th>
+                                        <th class="text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Dynamic rows loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Payment Accounts Section (NEW) -->
+            <section id="tab-accounts" class="tab-content">
+                <div class="filter-bar content-card">
+                    <div class="accounts-summary-left">
+                        <span class="filter-label">Total Liquid Net Worth:</span>
+                        <h2 class="text-gradient" id="accounts-total-balance">$0.00</h2>
+                    </div>
+                    <button class="btn btn-primary" id="btn-add-account">
+                        <i class="fa-solid fa-plus"></i> Link / Add Account
+                    </button>
+                </div>
+
+                <div class="grid-three-cols" id="accounts-grid">
+                    <!-- Dynamic Account Cards will load here -->
+                </div>
+            </section>
+
+            <!-- 5. Subscriptions & Recurring Bills Section (NEW) -->
+            <section id="tab-recurring" class="tab-content">
+                <div class="stats-grid">
+                    <div class="stat-card spent">
+                        <div class="stat-icon-wrapper">
+                            <i class="fa-solid fa-repeat"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Active Monthly Commitment</span>
+                            <h3 class="stat-value text-info" id="recurring-stat-total">$0.00</h3>
+                        </div>
+                        <div class="stat-glow"></div>
+                    </div>
+                    <div class="stat-card count">
+                        <div class="stat-icon-wrapper">
+                            <i class="fa-solid fa-bell"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Active Subscriptions</span>
+                            <h3 class="stat-value" id="recurring-stat-count">0</h3>
+                        </div>
+                        <div class="stat-glow"></div>
+                    </div>
+                </div>
+
+                <div class="filter-bar content-card margin-top">
+                    <div class="filter-inputs">
+                        <div class="search-input-wrapper flex-grow">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="recurring-search" class="form-control" placeholder="Search subscriptions...">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="btn-add-recurring">
+                        <i class="fa-solid fa-plus"></i> New Subscription
+                    </button>
+                </div>
+
+                <div class="grid-three-cols" id="recurring-grid">
+                    <!-- Dynamic recurring subscription cards load here -->
+                </div>
+            </section>
+
+            <!-- 6. Savings Goals Section (NEW) -->
+            <section id="tab-goals" class="tab-content">
+                <div class="stats-grid">
+                    <div class="stat-card remaining">
+                        <div class="stat-icon-wrapper">
+                            <i class="fa-solid fa-bullseye"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Total Saved Across Goals</span>
+                            <h3 class="stat-value text-success" id="goals-stat-saved">$0.00</h3>
+                        </div>
+                        <div class="stat-glow"></div>
+                    </div>
+                    <div class="stat-card budget">
+                        <div class="stat-icon-wrapper">
+                            <i class="fa-solid fa-flag-checkered"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Total Target Value</span>
+                            <h3 class="stat-value" id="goals-stat-target">$0.00</h3>
+                        </div>
+                        <div class="stat-glow"></div>
+                    </div>
+                </div>
+
+                <div class="filter-bar content-card margin-top">
+                    <div class="filter-inputs">
+                        <div class="search-input-wrapper flex-grow">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="goals-search" class="form-control" placeholder="Search goals...">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="btn-add-goal">
+                        <i class="fa-solid fa-plus"></i> Create Savings Goal
+                    </button>
+                </div>
+
+                <div class="grid-three-cols" id="goals-grid">
+                    <!-- Dynamic savings goals cards load here -->
+                </div>
+            </section>
+
+            <!-- 7. Categories Section -->
             <section id="tab-categories" class="tab-content">
                 <div class="filter-bar content-card">
                     <div class="search-input-wrapper flex-grow">
@@ -307,7 +542,7 @@
                 </div>
             </section>
 
-            <!-- 4. Budgets Section -->
+            <!-- 8. Budgets Section -->
             <section id="tab-budgets" class="tab-content">
                 <div class="filter-bar content-card">
                     <div class="budget-filter-inputs">
@@ -324,7 +559,7 @@
                 </div>
             </section>
 
-            <!-- 5. Analytics & Reports Section -->
+            <!-- 9. Analytics & Reports Section -->
             <section id="tab-analytics" class="tab-content">
                 <!-- Report Generator Card -->
                 <div class="content-card">
@@ -396,7 +631,7 @@
     </div>
 
     <!-- Modals -->
-    <!-- 1. Expense Dialog Modal -->
+    <!-- 1. Expense Dialog Modal (ENHANCED) -->
     <div class="modal-backdrop" id="expense-modal">
         <div class="modal-content glass">
             <div class="modal-header">
@@ -406,9 +641,15 @@
             <div class="modal-body">
                 <form id="expense-form">
                     <input type="hidden" id="expense-id">
-                    <div class="form-group">
-                        <label for="expense-name">Expense Title</label>
-                        <input type="text" id="expense-name" class="form-control" placeholder="e.g. Weekly Grocery Run" required>
+                    <div class="grid-two-cols-gapless">
+                        <div class="form-group pr-1">
+                            <label for="expense-name">Expense Title</label>
+                            <input type="text" id="expense-name" class="form-control" placeholder="e.g. Grocery Store" required>
+                        </div>
+                        <div class="form-group pl-1">
+                            <label for="expense-merchant">Merchant / Vendor</label>
+                            <input type="text" id="expense-merchant" class="form-control" placeholder="e.g. Trader Joe's, Apple">
+                        </div>
                     </div>
                     <div class="grid-two-cols-gapless">
                         <div class="form-group pr-1">
@@ -420,15 +661,40 @@
                             <input type="date" id="expense-date" class="form-control" required>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="expense-category">Category</label>
-                        <select id="expense-category" class="form-control" required>
-                            <option value="" disabled selected>Select Category</option>
-                        </select>
+                    <div class="grid-two-cols-gapless">
+                        <div class="form-group pr-1">
+                            <label for="expense-category">Category</label>
+                            <select id="expense-category" class="form-control" required>
+                                <option value="" disabled selected>Select Category</option>
+                            </select>
+                        </div>
+                        <div class="form-group pl-1">
+                            <label for="expense-account">Payment Account</label>
+                            <select id="expense-account" class="form-control">
+                                <option value="">None / External Cash</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid-two-cols-gapless">
+                        <div class="form-group pr-1">
+                            <label for="expense-payment-method">Payment Method</label>
+                            <select id="expense-payment-method" class="form-control">
+                                <option value="CREDIT_CARD">Credit Card</option>
+                                <option value="DEBIT_CARD">Debit Card</option>
+                                <option value="CASH">Cash</option>
+                                <option value="BANK_TRANSFER">Bank Transfer</option>
+                                <option value="UPI">UPI</option>
+                                <option value="DIGITAL_WALLET">Digital Wallet</option>
+                            </select>
+                        </div>
+                        <div class="form-group pl-1">
+                            <label for="expense-tags">Tags (comma separated)</label>
+                            <input type="text" id="expense-tags" class="form-control" placeholder="e.g. TaxDeductible, Groceries">
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="expense-description">Description</label>
-                        <textarea id="expense-description" class="form-control" rows="3" placeholder="Describe this transaction..."></textarea>
+                        <label for="expense-description">Description / Notes</label>
+                        <textarea id="expense-description" class="form-control" rows="2" placeholder="Describe this transaction..."></textarea>
                     </div>
                     <div class="modal-actions">
                         <button type="button" class="btn btn-secondary" id="btn-cancel-expense">Cancel</button>
@@ -439,7 +705,299 @@
         </div>
     </div>
 
-    <!-- 2. Category Dialog Modal -->
+    <!-- 2. Income Dialog Modal (NEW) -->
+    <div class="modal-backdrop" id="income-modal">
+        <div class="modal-content glass">
+            <div class="modal-header">
+                <h3 id="income-modal-title"><i class="fa-solid fa-money-bill-wave"></i> Record Income</h3>
+                <button class="modal-close-btn" id="btn-close-income-modal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="income-form">
+                    <input type="hidden" id="income-id">
+                    <div class="grid-two-cols-gapless">
+                        <div class="form-group pr-1">
+                            <label for="income-source">Income Source</label>
+                            <input type="text" id="income-source" class="form-control" placeholder="e.g. Tech Corp Monthly Salary" required>
+                        </div>
+                        <div class="form-group pl-1">
+                            <label for="income-amount">Amount ($)</label>
+                            <input type="number" step="0.01" id="income-amount" class="form-control" placeholder="0.00" required>
+                        </div>
+                    </div>
+                    <div class="grid-two-cols-gapless">
+                        <div class="form-group pr-1">
+                            <label for="income-date">Date Received</label>
+                            <input type="date" id="income-date" class="form-control" required>
+                        </div>
+                        <div class="form-group pl-1">
+                            <label for="income-account">Deposit Into Account</label>
+                            <select id="income-account" class="form-control">
+                                <option value="">None / External</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid-two-cols-gapless">
+                        <div class="form-group pr-1">
+                            <label for="income-category">Category</label>
+                            <select id="income-category" class="form-control">
+                                <option value="">General Income</option>
+                            </select>
+                        </div>
+                        <div class="form-group pl-1">
+                            <label for="income-method">Payment Method</label>
+                            <select id="income-method" class="form-control">
+                                <option value="BANK_TRANSFER">Direct Deposit / Transfer</option>
+                                <option value="CASH">Cash</option>
+                                <option value="UPI">UPI</option>
+                                <option value="DIGITAL_WALLET">Digital Wallet</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="income-notes">Notes</label>
+                        <textarea id="income-notes" class="form-control" rows="2" placeholder="Optional income note"></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" id="btn-cancel-income">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="btn-submit-income">Save Income</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Payment Account Dialog Modal (NEW) -->
+    <div class="modal-backdrop" id="account-modal">
+        <div class="modal-content glass">
+            <div class="modal-header">
+                <h3 id="account-modal-title"><i class="fa-solid fa-building-columns"></i> Link Payment Account</h3>
+                <button class="modal-close-btn" id="btn-close-account-modal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="account-form">
+                    <input type="hidden" id="account-id">
+                    <div class="grid-two-cols-gapless">
+                        <div class="form-group pr-1">
+                            <label for="account-name">Account Name</label>
+                            <input type="text" id="account-name" class="form-control" placeholder="e.g. Chase Sapphire Checking" required>
+                        </div>
+                        <div class="form-group pl-1">
+                            <label for="account-type">Account Type</label>
+                            <select id="account-type" class="form-control" required>
+                                <option value="BANK_ACCOUNT">Bank Account</option>
+                                <option value="CREDIT_CARD">Credit Card</option>
+                                <option value="DIGITAL_WALLET">Digital Wallet</option>
+                                <option value="CASH">Physical Cash</option>
+                                <option value="INVESTMENT">Investment Portfolio</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid-two-cols-gapless">
+                        <div class="form-group pr-1">
+                            <label for="account-institution">Institution / Bank</label>
+                            <input type="text" id="account-institution" class="form-control" placeholder="e.g. Chase, Amex, Apple">
+                        </div>
+                        <div class="form-group pl-1">
+                            <label for="account-masked">Masked Number</label>
+                            <input type="text" id="account-masked" class="form-control" placeholder="e.g. •••• 4912">
+                        </div>
+                    </div>
+                    <div class="grid-two-cols-gapless">
+                        <div class="form-group pr-1">
+                            <label for="account-balance">Current Balance ($)</label>
+                            <input type="number" step="0.01" id="account-balance" class="form-control" placeholder="0.00" required>
+                        </div>
+                        <div class="form-group pl-1">
+                            <label for="account-credit-limit">Credit Limit ($ optional)</label>
+                            <input type="number" step="0.01" id="account-credit-limit" class="form-control" placeholder="0.00">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="account-color">Card Color Theme</label>
+                        <select id="account-color" class="form-control">
+                            <option value="#3b82f6">Sapphire Blue (#3b82f6)</option>
+                            <option value="#8b5cf6">Amethyst Purple (#8b5cf6)</option>
+                            <option value="#f59e0b">Gold / Amber (#f59e0b)</option>
+                            <option value="#10b981">Emerald Green (#10b981)</option>
+                            <option value="#ec4899">Rose Pink (#ec4899)</option>
+                            <option value="#06b6d4">Cyan Ocean (#06b6d4)</option>
+                        </select>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" id="btn-cancel-account">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="btn-submit-account">Save Account</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Recurring Subscription Dialog Modal (NEW) -->
+    <div class="modal-backdrop" id="recurring-modal">
+        <div class="modal-content glass">
+            <div class="modal-header">
+                <h3 id="recurring-modal-title"><i class="fa-solid fa-repeat"></i> Add Subscription / Bill</h3>
+                <button class="modal-close-btn" id="btn-close-recurring-modal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="recurring-form">
+                    <input type="hidden" id="recurring-id">
+                    <div class="grid-two-cols-gapless">
+                        <div class="form-group pr-1">
+                            <label for="recurring-title">Service / Bill Title</label>
+                            <input type="text" id="recurring-title" class="form-control" placeholder="e.g. Netflix Premium, Gym" required>
+                        </div>
+                        <div class="form-group pl-1">
+                            <label for="recurring-amount">Amount ($)</label>
+                            <input type="number" step="0.01" id="recurring-amount" class="form-control" placeholder="0.00" required>
+                        </div>
+                    </div>
+                    <div class="grid-two-cols-gapless">
+                        <div class="form-group pr-1">
+                            <label for="recurring-frequency">Billing Frequency</label>
+                            <select id="recurring-frequency" class="form-control" required>
+                                <option value="MONTHLY" selected>Monthly</option>
+                                <option value="YEARLY">Yearly</option>
+                                <option value="WEEKLY">Weekly</option>
+                                <option value="QUARTERLY">Quarterly</option>
+                            </select>
+                        </div>
+                        <div class="form-group pl-1">
+                            <label for="recurring-next-date">Next Due Date</label>
+                            <input type="date" id="recurring-next-date" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="grid-two-cols-gapless">
+                        <div class="form-group pr-1">
+                            <label for="recurring-category">Category</label>
+                            <select id="recurring-category" class="form-control">
+                                <option value="">General</option>
+                            </select>
+                        </div>
+                        <div class="form-group pl-1">
+                            <label for="recurring-account">Deduct From Account</label>
+                            <select id="recurring-account" class="form-control">
+                                <option value="">None / External</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="recurring-status">Status</label>
+                        <select id="recurring-status" class="form-control">
+                            <option value="ACTIVE" selected>Active</option>
+                            <option value="PAUSED">Paused</option>
+                            <option value="CANCELLED">Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="recurring-notes">Notes</label>
+                        <textarea id="recurring-notes" class="form-control" rows="2" placeholder="Optional notes..."></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" id="btn-cancel-recurring">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="btn-submit-recurring">Save Subscription</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. Savings Goal Dialog Modal (NEW) -->
+    <div class="modal-backdrop" id="goal-modal">
+        <div class="modal-content glass">
+            <div class="modal-header">
+                <h3 id="goal-modal-title"><i class="fa-solid fa-bullseye"></i> Create Savings Goal</h3>
+                <button class="modal-close-btn" id="btn-close-goal-modal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="goal-form">
+                    <input type="hidden" id="goal-id">
+                    <div class="form-group">
+                        <label for="goal-name">Goal Name</label>
+                        <input type="text" id="goal-name" class="form-control" placeholder="e.g. Japan Vacation, Emergency Fund" required>
+                    </div>
+                    <div class="grid-two-cols-gapless">
+                        <div class="form-group pr-1">
+                            <label for="goal-target">Target Amount ($)</label>
+                            <input type="number" step="0.01" id="goal-target" class="form-control" placeholder="5000.00" required>
+                        </div>
+                        <div class="form-group pl-1">
+                            <label for="goal-current">Starting / Current Saved ($)</label>
+                            <input type="number" step="0.01" id="goal-current" class="form-control" placeholder="0.00">
+                        </div>
+                    </div>
+                    <div class="grid-two-cols-gapless">
+                        <div class="form-group pr-1">
+                            <label for="goal-date">Target Date</label>
+                            <input type="date" id="goal-date" class="form-control" required>
+                        </div>
+                        <div class="form-group pl-1">
+                            <label for="goal-priority">Priority</label>
+                            <select id="goal-priority" class="form-control">
+                                <option value="LOW">Low</option>
+                                <option value="MEDIUM" selected>Medium</option>
+                                <option value="HIGH">High</option>
+                                <option value="URGENT">Urgent</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid-two-cols-gapless">
+                        <div class="form-group pr-1">
+                            <label for="goal-account">Linked Account</label>
+                            <select id="goal-account" class="form-control">
+                                <option value="">None / Dedicated Piggybank</option>
+                            </select>
+                        </div>
+                        <div class="form-group pl-1">
+                            <label for="goal-color">Goal Theme Color</label>
+                            <select id="goal-color" class="form-control">
+                                <option value="#10b981">Emerald (#10b981)</option>
+                                <option value="#3b82f6">Blue (#3b82f6)</option>
+                                <option value="#8b5cf6">Purple (#8b5cf6)</option>
+                                <option value="#ec4899">Pink (#ec4899)</option>
+                                <option value="#f59e0b">Amber (#f59e0b)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="goal-notes">Notes</label>
+                        <textarea id="goal-notes" class="form-control" rows="2" placeholder="Description & milestones..."></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" id="btn-cancel-goal">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="btn-submit-goal">Save Goal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. Contribute to Goal Modal (NEW) -->
+    <div class="modal-backdrop" id="contribute-modal">
+        <div class="modal-content glass sm">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-piggy-bank text-success"></i> Deposit Towards Goal</h3>
+                <button class="modal-close-btn" id="btn-close-contribute-modal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="contribute-form">
+                    <input type="hidden" id="contribute-goal-id">
+                    <p class="text-secondary mb-3">Goal: <strong id="contribute-goal-title" class="text-primary"></strong></p>
+                    <div class="form-group">
+                        <label for="contribute-amount">Deposit Amount ($)</label>
+                        <input type="number" step="0.01" id="contribute-amount" class="form-control" placeholder="100.00" required>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" id="btn-cancel-contribute">Cancel</button>
+                        <button type="submit" class="btn btn-success" id="btn-submit-contribute">Confirm Deposit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. Category Dialog Modal (ENHANCED) -->
     <div class="modal-backdrop" id="category-modal">
         <div class="modal-content glass">
             <div class="modal-header">
@@ -449,13 +1007,56 @@
             <div class="modal-body">
                 <form id="category-form">
                     <input type="hidden" id="category-id">
+                    <div class="grid-two-cols-gapless">
+                        <div class="form-group pr-1">
+                            <label for="category-name">Category Name</label>
+                            <input type="text" id="category-name" class="form-control" placeholder="e.g. Entertainment" required>
+                        </div>
+                        <div class="form-group pl-1">
+                            <label for="category-type">Category Classification</label>
+                            <select id="category-type" class="form-control">
+                                <option value="EXPENSE" selected>Expense Bucket</option>
+                                <option value="INCOME">Income Stream</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid-two-cols-gapless">
+                        <div class="form-group pr-1">
+                            <label for="category-icon">Icon (FontAwesome)</label>
+                            <select id="category-icon" class="form-control">
+                                <option value="fa-utensils">Utensils (Dining)</option>
+                                <option value="fa-house">House (Housing)</option>
+                                <option value="fa-car">Car (Transit)</option>
+                                <option value="fa-laptop-code">Laptop (Tech)</option>
+                                <option value="fa-heart-pulse">Heart (Health)</option>
+                                <option value="fa-cart-shopping">Cart (Shopping)</option>
+                                <option value="fa-film">Film (Entertainment)</option>
+                                <option value="fa-money-bill-wave">Money (Salary)</option>
+                                <option value="fa-chart-pie">Chart (Investment)</option>
+                                <option value="fa-tag">Tag (General)</option>
+                            </select>
+                        </div>
+                        <div class="form-group pl-1">
+                            <label for="category-color">Accent Color</label>
+                            <select id="category-color" class="form-control">
+                                <option value="#6366f1">Indigo (#6366f1)</option>
+                                <option value="#f59e0b">Amber (#f59e0b)</option>
+                                <option value="#10b981">Emerald (#10b981)</option>
+                                <option value="#ec4899">Pink (#ec4899)</option>
+                                <option value="#06b6d4">Cyan (#06b6d4)</option>
+                                <option value="#8b5cf6">Purple (#8b5cf6)</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="form-group">
-                        <label for="category-name">Category Name</label>
-                        <input type="text" id="category-name" class="form-control" placeholder="e.g. Entertainment" required>
+                        <label for="category-parent">Parent Category (For Subcategories)</label>
+                        <select id="category-parent" class="form-control">
+                            <option value="">None (Top-Level Category)</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="category-description">Description</label>
-                        <textarea id="category-description" class="form-control" rows="3" placeholder="Describe what expenses belong here..."></textarea>
+                        <textarea id="category-description" class="form-control" rows="2" placeholder="Describe what expenses belong here..."></textarea>
                     </div>
                     <div class="modal-actions">
                         <button type="button" class="btn btn-secondary" id="btn-cancel-category">Cancel</button>
@@ -466,7 +1067,7 @@
         </div>
     </div>
 
-    <!-- 3. Budget Dialog Modal -->
+    <!-- 8. Budget Dialog Modal (ENHANCED) -->
     <div class="modal-backdrop" id="budget-modal">
         <div class="modal-content glass">
             <div class="modal-header">
@@ -476,9 +1077,17 @@
             <div class="modal-body">
                 <form id="budget-form">
                     <input type="hidden" id="budget-id">
-                    <div class="form-group">
-                        <label for="budget-limit">Monthly Limit Amount ($)</label>
-                        <input type="number" step="0.01" id="budget-limit" class="form-control" placeholder="5000.00" required>
+                    <div class="grid-two-cols-gapless">
+                        <div class="form-group pr-1">
+                            <label for="budget-limit">Monthly Limit Amount ($)</label>
+                            <input type="number" step="0.01" id="budget-limit" class="form-control" placeholder="5000.00" required>
+                        </div>
+                        <div class="form-group pl-1">
+                            <label for="budget-category">Budget Scope / Category</label>
+                            <select id="budget-category" class="form-control">
+                                <option value="">Overall Monthly Budget</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="grid-two-cols-gapless">
                         <div class="form-group pr-1">
@@ -507,6 +1116,14 @@
                                 <option value="2028">2028</option>
                             </select>
                         </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="budget-threshold">Warning Alert Threshold (%)</label>
+                        <input type="number" id="budget-threshold" class="form-control" placeholder="80" value="80" min="10" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label for="budget-notes">Notes</label>
+                        <textarea id="budget-notes" class="form-control" rows="2" placeholder="Optional budget notes..."></textarea>
                     </div>
                     <div class="modal-actions">
                         <button type="button" class="btn btn-secondary" id="btn-cancel-budget">Cancel</button>

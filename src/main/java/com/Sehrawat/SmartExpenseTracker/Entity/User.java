@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -29,6 +30,25 @@ public class User implements UserDetails {
     private String password;
 
     private String role; // e.g. "ROLE_USER" or "ROLE_ADMIN"
+
+    private String fullName;
+
+    private String email;
+
+    @Builder.Default
+    private String currencyPreference = "USD";
+
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+        if (currencyPreference == null) {
+            currencyPreference = "USD";
+        }
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

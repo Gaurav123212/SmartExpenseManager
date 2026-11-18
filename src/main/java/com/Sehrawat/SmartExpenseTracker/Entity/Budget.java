@@ -1,18 +1,17 @@
 package com.Sehrawat.SmartExpenseTracker.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Entity
+@Table(name = "budget")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Budget {
 
     @Id
@@ -27,5 +26,14 @@ public class Budget {
 
     @Column(nullable = false)
     private int year;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @Builder.Default
+    private Double warningThresholdPercent = 80.0;
+
+    private String notes;
 
 }

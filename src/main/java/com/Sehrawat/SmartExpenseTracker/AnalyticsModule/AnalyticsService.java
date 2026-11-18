@@ -7,4 +7,5 @@ public interface AnalyticsService {
     AnalyticsDto getBudgetStatus(String month, int year);
     MonthlyReportDto getMonthlyReport(String month, int year);
     List<SpendingTrendDto> getSpendingTrend(int year);
+    CashFlowDto getCashFlow(String month, int year);
 }

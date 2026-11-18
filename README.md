@@ -1,28 +1,55 @@
-# SmartExpenseTracker — Premium Financial Analytics & Expense Manager
+# SmartExpenseTracker — Premium Financial Analytics, Wealth & Cash Flow Manager
 
-SmartExpenseTracker is a high-fidelity, sleek, and modern web application designed to track, analyze, and optimize personal spending habits in real-time. Built with a premium glassmorphic dark user interface on the frontend and a secure Spring Boot REST API on the backend, it serves as a complete solution for personal budget management.
+SmartExpenseTracker is a high-fidelity, sleek, and modern web application designed to track, analyze, and optimize personal spending habits, cash flow, liquid net worth, recurring subscriptions, and savings milestones in real-time. Built with a premium glassmorphic dark user interface on the frontend and a secure, enterprise-grade Spring Boot REST API on the backend.
 
 ---
 
 ## 🚀 Key Features
 
 ### 🔒 Modern Security (Powered by Spring Security)
-* **Database-Backed Authentication**: Register accounts and sign in securely. User passwords are automatically hashed using **BCrypt** before database storage.
-* **Seamless Login/Logout**: Features a beautiful glassmorphic custom login screen with dynamic transitions between signing in and signing up. Session control automatically intercepts unauthorized requests and provides smooth redirects.
-* **Auto-Seeded Administrator**: Auto-seeds a default administrative user (`admin`/`admin123`) on application startup if the database contains no users, facilitating instant access.
-* **Secured REST API**: All endpoints (`/expenses`, `/categories`, `/budgets`, `/analytics`) are secured under a centralized security filter chain.
+* **Database-Backed Authentication**: Register accounts and sign in securely. User passwords are automatically hashed using **BCrypt**.
+* **Seamless Login/Logout**: Glassmorphic custom login screen with dynamic transitions between signing in and signing up. Session control automatically intercepts unauthorized requests and provides smooth redirects.
+* **Auto-Seeded Administrator**: Auto-seeds a default administrative user (`admin`/`admin123`) on application startup.
+* **Centralized API Security**: All REST endpoints are secured under a centralized security filter chain.
 
-### 📊 Real-Time Analytics & Reports
-* **Dashboard Stats**: Live tracking of *Total Spent*, *Active Budget Limit*, *Remaining Balance*, and *Total Transaction Count*.
-* **Monthly Utilization Gauge**: Visualizes budget consumption using an interactive progress ring.
-* **Category Distribution**: Dynamic pie charts displaying expense distribution across categories.
-* **Annual Spending Trends**: Line charts analyzing month-by-month spending trends throughout the year.
-* **Monthly PDF-like Reports**: Quick generation of comprehensive financial reports for any given month/year.
+### 💳 Multi-Account & Portfolio Manager (NEW TABLE: `payment_accounts`)
+* **Multi-Account Support**: Manage Checking accounts, Credit Cards, Digital Wallets, Cash Wallets, and Investment Portfolios.
+* **Live Net Liquid Balance**: Real-time aggregated balance tracking across all active payment methods.
+* **Credit Limit & Utilization Meter**: Live tracking of credit card utilization against assigned credit limits.
+* **Auto-Balance Deduction & Credit**: Adding or deleting expenses/incomes automatically synchronizes account balances in real-time.
 
-### 💸 Core Operations
-* **Expenses**: Full CRUD support. Search transactions in real-time, filter by category, sort by date/amount, and quick-add transactions directly from the dashboard.
-* **Categories**: Define and search custom expense categories.
-* **Monthly Budgets**: Set spending limit targets for specific month-year pairings. An automatic warning banner triggers on the dashboard when spending exceeds **80%** of the active budget limit.
+### 💵 Income & Cash Flow Tracking (NEW TABLE: `incomes`)
+* **Inflow Ledger**: Log income sources (salary, freelance, dividends, rental income) with dates, deposited accounts, and payment methods.
+* **Net Cash Flow KPI**: Live dashboard calculation of **Total Income - Total Expenses = Net Monthly Savings**.
+* **Savings Rate %**: Tracks your percentage of income saved each month.
+
+### 🔁 Subscriptions & Scheduled Bills (NEW TABLE: `recurring_expenses`)
+* **Subscription Management**: Monitor Netflix, Gym, AWS, Rent, and insurance commitments with custom billing frequencies (Daily, Weekly, Monthly, Quarterly, Yearly).
+* **Upcoming Bill Reminders**: Automatic dynamic calculation of days until next due date (`Due Today / Overdue`, `Due in X days`).
+* **One-Click "Pay & Advance"**: Clicking Pay automatically records an expense in your transaction ledger, deducts funds from the linked account, and rolls the due date forward to the next billing cycle.
+
+### 🎯 Target Savings Goals (NEW TABLE: `savings_goals`)
+* **Goal Setting**: Plan milestones (Emergency Fund, Vacations, Tech Upgrades) with target deadlines, priority levels (`URGENT`, `HIGH`, `MEDIUM`, `LOW`), and linked accounts.
+* **Visual Progress Tracker**: Dynamic gradient progress bars with completion percentages and remaining funding needed.
+* **Quick Contribution/Deposit Modal**: Deposit funds towards any savings goal with automatic transition to `ACHIEVED` once the target is reached.
+
+### 🏷️ Multi-Tagging & Taxonomy (NEW TABLE: `tags` & `expense_tags`)
+* **Many-to-Many Tags**: Tag expenses with labels like `#TaxDeductible`, `#Business`, `#Travel`, `#Groceries`.
+* **Tag-based Auditing**: Easily audit business and tax-deductible items.
+
+### 📂 Hierarchical Categories (ENHANCED TABLE: `category`)
+* **Subcategory Support**: Self-referencing parent-child relationships allowing nested subcategories (e.g. Food & Dining → Groceries, Restaurants).
+* **Visual Icon & Color Palettes**: Categories feature FontAwesome icons and custom accent colors for rich visual distinction.
+* **Category Classification**: Categorize buckets as `EXPENSE` or `INCOME`.
+
+### 📊 Monthly Budgets & Warning Triggers (ENHANCED TABLE: `budget`)
+* **Category-Specific or Global Budgets**: Set overarching monthly caps or budget specifically per category.
+* **Configurable Warning Thresholds**: Trigger automatic dashboard alert banners when spending reaches 80% (or custom threshold) of the budget cap.
+
+### 📈 Real-Time Analytics & Reports
+* **Monthly Utilization Gauge**: Visualizes budget consumption using an interactive SVG progress ring.
+* **Category Distribution**: Dynamic Chart.js doughnut chart breaking down spending by category.
+* **Annual Spending Trends**: Smooth Bezier line chart analyzing month-by-month expenditure over the year.
 
 ---
 
@@ -35,30 +62,27 @@ SmartExpenseTracker is a high-fidelity, sleek, and modern web application design
 * **Utilities**: Lombok, ModelMapper
 
 ### Frontend
-* **UI Design**: Vanilla HTML5 & CSS3 featuring a custom Glassmorphic dark mode design system (using custom tokens, gradients, micro-animations, and blur filters).
+* **UI Design**: Vanilla HTML5 & CSS3 featuring a custom Glassmorphic dark mode design system (custom tokens, gradients, micro-animations, and blur filters).
 * **Interactions**: Vanilla JavaScript (Fetch API for session-based asynchronous communication).
 * **Visualizations**: Chart.js (via CDN).
 * **Icons & Fonts**: FontAwesome v6, Google Fonts (Plus Jakarta Sans).
 
 ---
 
-## 💻 Database Setup & Structure
+## 💻 Database Schema Architecture
 
-The application connects to a MySQL database and automatically creates/migrates tables using Hibernate (`ddl-auto=update`).
+The application connects to a MySQL database and automatically creates and updates tables using Hibernate (`ddl-auto=update`):
 
-### Database Configuration
-Ensure MySQL is running, and configure your credentials in `src/main/resources/application.properties`:
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/expense_tracker
-spring.datasource.username=YOUR_MYSQL_USERNAME
-spring.datasource.password=YOUR_MYSQL_PASSWORD
-```
-
-### Table Schema Generated
-1. **users**: Stores authentication credentials.
-2. **category**: Manages custom categories for tracking.
-3. **budget**: Holds the set monthly expenditure limits.
-4. **expense**: Tracks individual financial transactions.
+1. **`users`**: User credentials (`id`, `username`, `password`, `role`, `fullName`, `email`, `currencyPreference`, `createdAt`).
+2. **`category`**: Spending and income categories with icons, color codes, classification, and self-referencing hierarchy (`parent_category_id`).
+3. **`payment_accounts`**: Financial accounts (`accountName`, `accountType`, `institutionName`, `accountNumberMasked`, `currentBalance`, `creditLimit`, `color`).
+4. **`expense`**: Individual transactions (`name`, `merchant`, `amount`, `expenseDate`, `category_id`, `account_id`, `paymentMethod`, `paymentStatus`, `isRecurring`).
+5. **`tags`**: Reusable tags (`name`, `color`, `description`).
+6. **`expense_tags`**: Many-to-many join table connecting `expense` and `tags`.
+7. **`incomes`**: Inflow transactions (`source`, `amount`, `incomeDate`, `category_id`, `account_id`, `paymentMethod`, `notes`).
+8. **`recurring_expenses`**: Subscriptions and bills (`title`, `amount`, `frequency`, `startDate`, `nextDueDate`, `category_id`, `account_id`, `status`, `autoPay`).
+9. **`savings_goals`**: Milestones and savings targets (`goalName`, `targetAmount`, `currentAmount`, `targetDate`, `priority`, `status`, `account_id`, `color`).
+10. **`budget`**: Monthly expenditure limits with optional category links and alert thresholds (`monthlyLimit`, `month`, `year`, `category_id`, `warningThresholdPercent`).
 
 ---
 
@@ -66,70 +90,25 @@ spring.datasource.password=YOUR_MYSQL_PASSWORD
 
 ### Prerequisites
 * Java JDK 21 or higher installed.
-* Maven installed (or use the included wrapper `./mvnw`).
-* MySQL Server installed and running.
-* A database named `expense_tracker` created in MySQL:
+* Maven installed (or use `./mvnw` / `mvnw.cmd`).
+* MySQL Server running with database `expense_tracker`:
   ```sql
   CREATE DATABASE expense_tracker;
   ```
 
-### Getting Started
+### Build & Run
+```bash
+# Compile and build
+mvn clean compile
 
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/Gaurav123212/SmartExpenseManager.git
-   cd SmartExpenseManager
-   ```
+# Run tests
+mvn test
 
-2. **Verify Database Configuration**:
-   Update `src/main/resources/application.properties` with your database credentials.
+# Start the application
+mvn spring-boot:run
+```
 
-3. **Build the Application**:
-   Compile the source files and download dependencies:
-   ```bash
-   # Windows
-   mvnw.cmd clean compile
-   
-   # macOS/Linux
-   ./mvnw clean compile
-   ```
-
-4. **Run Tests**:
-   Ensure all configurations and integrations boot correctly:
-   ```bash
-   # Windows
-   mvnw.cmd test
-   
-   # macOS/Linux
-   ./mvnw test
-   ```
-
-5. **Start the Server**:
-   Launch the Spring Boot development server (running on port `8081`):
-   ```bash
-   # Windows
-   mvnw.cmd spring-boot:run
-   
-   # macOS/Linux
-   ./mvnw spring-boot:run
-   ```
-
-6. **Open in Browser**:
-   Navigate to `http://localhost:8081/`. You will automatically be redirected to the custom login screen (`/login.html`).
-
----
-
-## 🔑 Accessing the App
-
-### Default Credentials
-On startup, a default administrator is created for initial access:
-* **Username**: `admin`
-* **Password**: `admin123`
-
-### Registering New Users
-1. On the login screen, click the **"Sign Up"** tab.
-2. Choose a new username and password, then click **"Create Account"**.
-3. Upon success, you will be redirected to the **"Sign In"** tab where you can log in with your newly registered credentials.
-
-### Logging Out
-Click the **Logout** button (red power icon) located at the bottom-right corner of the sidebar footer to terminate your session.
+Access the application in your browser:
+* **URL**: `http://localhost:8081`
+* **Default Admin Username**: `admin`
+* **Default Admin Password**: `admin123`

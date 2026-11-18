@@ -31,4 +31,9 @@ public class AnalyticsController {
         return ResponseEntity.ok(analyticsService.getSpendingTrend(year));
     }
 
+    @GetMapping("/cash-flow")
+    public ResponseEntity<CashFlowDto> getCashFlow(@RequestParam String month, @RequestParam int year) {
+        return ResponseEntity.ok(analyticsService.getCashFlow(month, year));
+    }
+
 }
