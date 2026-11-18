@@ -21,10 +21,10 @@ TRUNCATE TABLE users;
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- 1. USERS (Auto-admin + Student accounts)
--- Passwords hashed with BCrypt ($2a$10$...) for admin123 and student123
+-- Passwords hashed with BCrypt for 'admin123'
 INSERT INTO users (id, username, password, role, full_name, email, phone_number, currency_preference) VALUES
-(1, 'admin', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVKIUi', 'ROLE_ADMIN', 'System Administrator', 'admin@smartexpense.sjce', '9880012345', 'INR'),
-(2, 'gaurav', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVKIUi', 'ROLE_USER', 'Gaurav Sehrawat', '01jst21cs002@jssstuniv.in', '9845011223', 'INR');
+(1, 'admin', '$2a$10$tp.nK9iGwAsOFXzw71uBGO.FHD7zpHfhdA354Fhk0G9CANBJ9n8RW', 'ROLE_ADMIN', 'System Administrator', 'admin@smartexpense.sjce', '9880012345', 'INR'),
+(2, 'gaurav', '$2a$10$tp.nK9iGwAsOFXzw71uBGO.FHD7zpHfhdA354Fhk0G9CANBJ9n8RW', 'ROLE_USER', 'Gaurav Sehrawat', '01jst21cs002@jssstuniv.in', '9845011223', 'INR');
 
 -- 2. PAYMENT ACCOUNTS (Matching actual UPI bank handles from screenshots)
 INSERT INTO payment_accounts (id, user_id, account_name, account_type, institution_name, account_number_masked, current_balance, credit_limit, currency, active, color) VALUES

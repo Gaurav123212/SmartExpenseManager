@@ -26,15 +26,14 @@ public class AnalyticsServiceImpl implements AnalyticsService {
     @Override
     public AnalyticsDto getBudgetStatus(String month, int year) {
 
-        Budget budget = budgetRepo.findByMonthAndYear(month, year)
-                .orElse(null);
+        List<Budget> budgets = budgetRepo.findByMonthAndYear(month, year);
 
         BigDecimal spent = expenseRepo.getTotalExpensesByMonthAndYear(month, year);
         if (spent == null) {
             spent = BigDecimal.ZERO;
         }
 
-        if (budget == null) {
+        if (budgets == null || budgets.isEmpty()) {
             AnalyticsDto dto = new AnalyticsDto();
             dto.setBudget(BigDecimal.ZERO);
             dto.setSpent(spent);
@@ -44,7 +43,11 @@ public class AnalyticsServiceImpl implements AnalyticsService {
             return dto;
         }
 
-        BigDecimal budgetLimit = budget.getMonthlyLimit();
+        BigDecimal budgetLimit = budgets.stream()
+                .map(Budget::getMonthlyLimit)
+                .filter(java.util.Objects::nonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
         BigDecimal remaining = budgetLimit.subtract(spent);
 
         double percentageUsed = 0.0;
@@ -54,9 +57,13 @@ public class AnalyticsServiceImpl implements AnalyticsService {
                     .doubleValue();
         }
 
-        String status;
-        double threshold = budget.getWarningThresholdPercent() != null ? budget.getWarningThresholdPercent() : 80.0;
+        double threshold = budgets.stream()
+                .map(Budget::getWarningThresholdPercent)
+                .filter(java.util.Objects::nonNull)
+                .findFirst()
+                .orElse(80.0);
 
+        String status;
         if (percentageUsed >= 100) {
             status = "BUDGET EXCEEDED";
         } else if (percentageUsed >= threshold) {
